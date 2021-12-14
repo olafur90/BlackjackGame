@@ -18,17 +18,17 @@ import java.util.ResourceBundle;
 public class HelloController implements Initializable {
 
     @FXML
-    private Label usdPrice;
-    @FXML
     private Label myBalance;
     @FXML
     private Slider betSlider;
     @FXML
-    private Label valueToBetLabel, myCardsLabel, mySumLabel, winLoseLabel, houseCardsLabel, housePlaysLabel;
+    private Label valueToBetLabel, mySumLabel, houseSumLabel;
     @FXML
     private Button betButton;
     @FXML
     private Button passButton, hitMeButton;
+    @FXML
+    private Label playerCard1, playerCard2, houseCard1, houseCard2, playerDraws, houseDraws;
 
     Game game;
     Scripts script = new Scripts();
@@ -38,23 +38,26 @@ public class HelloController implements Initializable {
 
     private void ClearUI() {
         valueToBetLabel.setText("");
-        myCardsLabel.setText("");
+        playerCard1.setText("");
+        playerCard2.setText("");
+        houseCard1.setText("");
+        houseCard2.setText("");
+        playerDraws.setText("");
+        houseDraws.setText("");
         mySumLabel.setText("");
-        winLoseLabel.setText("");
+        houseSumLabel.setText("");
         betButton.setDisable(false);
-        houseCardsLabel.setText("");
-        housePlaysLabel.setText("");
 
         betSlider.setValue(0);
         betSlider.setMax(MyCurrentBalance());
-        usdPrice.setText(String.format("Current USD price: %.2f$ / 1M SMLY", GetUSDValueOfMillionSMLY()));
+        // usdPrice.setText(String.format("Current USD price: %.2f$ / 1M SMLY", GetUSDValueOfMillionSMLY()));
         myBalance.setText(String.format("My balance: %.2f SMLY", MyCurrentBalance()));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        usdPrice.setText(String.format("Current USD price: %.2f$ / 1M SMLY", GetUSDValueOfMillionSMLY()));
+        //usdPrice.setText(String.format("Current USD price: %.2f$ / 1M SMLY", GetUSDValueOfMillionSMLY()));
         myBalance.setText(String.format("My balance: %.2f SMLY", MyCurrentBalance()));
         //myCardsLabel.setText("");
 
@@ -90,13 +93,21 @@ public class HelloController implements Initializable {
         else if (result.get() == ButtonType.CANCEL) System.out.println("Clicked CANCEL");
     }
 
-    public void betHandle(ActionEvent actionEvent) {
+    public void betHandle(ActionEvent actionEvent) throws IOException {
         if (betSlider.getValue() > 0) {
             double betAmount = betSlider.getValue();
             game = new Game(betAmount);
             betButton.setDisable(true);
             hitMeButton.setDisable(false);
             passButton.setDisable(false);
+
+            houseCard1.setText(String.format("%d", game.getHouseCardsInHand(0)));
+            houseCard2.setText("X");
+
+            playerCard1.setText(String.format("%d", game.getPlayerCardsInHand(0)));
+            playerCard2.setText(String.format("%d", game.getPlayerCardsInHand(1)));
+            mySumLabel.setText(game.getSum());
+            houseSumLabel.setText("");
         }
         else {
             Alert a = new Alert(Alert.AlertType.WARNING);
@@ -106,21 +117,25 @@ public class HelloController implements Initializable {
     }
 
     public void passHandle(ActionEvent actionEvent) throws InterruptedException, IOException {
+
+        houseCard2.setText(String.format("%d", game.getHouseCardsInHand(1)));
         hitMeButton.setDisable(true);
         passButton.setDisable(true);
-        game.Pass(houseCardsLabel);
+        game.Pass(houseDraws);
+        houseSumLabel.setText(game.getHouseSum());
         addRestartButton();
     }
 
     public void hitMeHandle(ActionEvent actionEvent) throws IOException {
         if (!game.Play()) {
             hitMeButton.setDisable(true);
-            winLoseLabel.setText("You got " + game.getSum() + ", and lose!");
+            playerDraws.setText(game.lastDrawnCard());
+            mySumLabel.setText(game.getSum());
             addRestartButton();
         }
-        StringBuilder cardsToLabel = new StringBuilder();
-        for (int card:game.getPlayerCardsInHand()) cardsToLabel.append(card + ", ");
-        myCardsLabel.setText(cardsToLabel.toString());
-        mySumLabel.setText(game.getSum());
+        else {
+            playerDraws.setText(game.lastDrawnCard());
+            mySumLabel.setText(game.getSum());
+        }
     }
 }

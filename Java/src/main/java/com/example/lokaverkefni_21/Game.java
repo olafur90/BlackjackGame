@@ -40,18 +40,24 @@ public class Game {
 
     public Game(double betAmount) {
         this.betAmount = betAmount;
-        houseSum = houseInit();
-        playerCardsInHand = new ArrayList<>();
-        houseCardsInHand = new ArrayList<>();
+        playerInit();
+        houseInit();
     }
 
-    private int houseInit() {
+    private void houseInit() {
         houseCardsInHand = new ArrayList<>();
         for (int i = 0; i < 2; i++) houseCardsInHand.add(DrawCard());
         for (int card:houseCardsInHand) houseSum += card;
 
         System.out.println("House sum: " + houseSum);
-        return houseSum;
+    }
+
+    private void playerInit() {
+        playerCardsInHand = new ArrayList<>();
+        for (int i = 0; i < 2; i++) playerCardsInHand.add(DrawCard());
+        for (int card:playerCardsInHand) playerSum += card;
+
+        System.out.println("Player sum after init: " + playerSum);
     }
 
     private int DrawCard() {
@@ -64,19 +70,24 @@ public class Game {
         HousePlays(playerSum, houseCardsLabel);
     }
 
-    public ArrayList<Integer> getPlayerCardsInHand() {
-        return playerCardsInHand;
+    public int getPlayerCardsInHand(int index) {
+        return playerCardsInHand.get(index);
     }
 
-    public ArrayList<Integer> getHouseCardsInHand() {
-        return houseCardsInHand;
+    public int getHouseCardsInHand(int index) {
+        return houseCardsInHand.get(index);
     }
 
 
     private void HousePlays(int playerScore, Label houseCardsLabel) throws InterruptedException, IOException {
         StringBuilder cardsToLabel = new StringBuilder();
 
-        for (int card:houseCardsInHand) cardsToLabel.append(card).append(", ");
+        //for (int card:houseCardsInHand) cardsToLabel.append(card).append(", ");
+
+        for (int i = 2; i < houseCardsInHand.size(); i++) {
+            cardsToLabel.append(houseCardsInHand.get(i)).append(", ");
+        }
+
         houseCardsLabel.setText(cardsToLabel.toString());                    // AF HVERJU KOMA EKKI FYRSTU SPILIN?
 
         while (playerScore > houseSum && houseSum < 21) {
@@ -117,19 +128,16 @@ public class Game {
     public void GameOver() throws IOException {
          if (playerWins) {
              SendForWinnings(betAmount);
-             gameOverMessage = "Yay! You win!";
+             gameOverMessage = String.format("Yay! You win! You will receive %f. It might take a few minutes", (betAmount * 2));
          }
          else if(tie) gameOverMessage = "Tie";
-
          else {
-             // TODO Virkja þetta þegar ég vill fara að senda á bottann
              SendLostSMLY();
-             gameOverMessage = String.format("You lose %d SMLY. %d will be sent to charity", (int)betAmount, (int)(betAmount / 10));
+             gameOverMessage = String.format("You lose. %d SMLY. %d will be sent to charity", (int)betAmount, (int)(betAmount / 10));
          }
 
          System.out.println(gameOverMessage);
          System.out.println(playerWins);
-
     }
 
     public void SendForWinnings(double betAmount) throws IOException {
@@ -153,11 +161,20 @@ public class Game {
 
     public void HitMe() {
         int card = DrawCard();
+        System.out.println("Drawn card " + card);
         playerCardsInHand.add(card);
         playerSum += card;
     }
 
     public String getSum() {
         return String.valueOf(playerSum);
+    }
+
+    public String getHouseSum() {
+        return String.valueOf(houseSum);
+    }
+
+    public String lastDrawnCard() {
+        return String.valueOf(playerCardsInHand.get(playerCardsInHand.size() - 1));
     }
 }
