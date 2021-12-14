@@ -3,6 +3,9 @@
 Linkur á bottann sem keyrir á annari tölvu
 https://github.com/olafur90/BlackjackBot.git
 
+Stutt vídjó sem sýnir aðeins virknina þar sem ég held að þetta virki bara í minni tölvu
+https://youtu.be/veMj1iKWc1c
+
 Þurfti að gefa java leyfi til þess að búa til og vinna með skrár í gegnum forritið. Ég hef ekki prufað að keyra forritið í annarri tölvu, en grunar að það þurfi að gefa því leyfi með chmod.
 
 Leikurinn sendir alltaf 90% af því sem er tapað á bottann, og 10% af því til góðgerðarmála. Það er harðkóðað núna að það fari til Barnaheilla, og hægt væri að bæta við virkni svipaðri og í netveskinu þar sem hægt er að velja úr fleiri góðgerðarmálum.
