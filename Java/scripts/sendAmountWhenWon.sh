@@ -19,7 +19,7 @@ echo "START WHILE"
 while [ $intAmount -lt $intBetAmount ]
 do
   UTXOAmount=$(echo `smileycoin-cli listunspent | jq '.['$counter'] | .amount'`)
-  echo $UTXOAmount
+  #echo $UTXOAmount
   intAmount=${UTXOAmount%.*}
   counter=$(expr $counter + 1)
 done
@@ -28,10 +28,10 @@ utxoAmount=$(echo `smileycoin-cli listunspent | jq '.['$counter'] | .amount'`)
 
 TX=$(echo `smileycoin-cli listunspent | jq '.['$(expr $counter - 1)'] | .txid'`)
 vout=$(echo `smileycoin-cli listunspent | jq '.['$(expr $counter - 1)'] | .vout'`)
-echo "txid: $TX" >> $logfile
-echo "vout: $vout" >> $logfile
-echo "amount: $intAmount" >> $logfile
-echo "Bet amount: $betAmount" >> $logfile
+#echo "txid: $TX" >> $logfile
+#echo "vout: $vout" >> $logfile
+#echo "amount: $intAmount" >> $logfile
+#echo "Bet amount: $betAmount" >> $logfile
 
 
 amountBackToPlayer=$(($intAmount-$intBetAmount-$bias))
@@ -44,6 +44,9 @@ txID=$(echo $TX | sed 's/"//g')
 tx=$(smileycoin-cli createrawtransaction '[{"txid" : "'$txID'","vout" : '$vout'}]' '{"BKeXkDQ25EYdqJ3MTyS7M4ujoDnpVEwu1h" : '$intBetAmount', "BMi44PNRYzvhxRnHeB5Y5aAVprH1g3gmSW" : '$amountBackToPlayer', "data" : "99"}')
 
 echo "txid: $tx" >> $logfile
+
+#echo $tx
+
 
 signedTx=$(smileycoin-cli signrawtransaction $tx | awk '/"hex"/ {print $3}' | sed 's/"//g' | sed 's/,$//')
 

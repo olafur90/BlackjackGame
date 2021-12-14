@@ -1,16 +1,10 @@
 package com.example.lokaverkefni_21;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -93,7 +87,7 @@ public class HelloController implements Initializable {
         else if (result.get() == ButtonType.CANCEL) System.out.println("Clicked CANCEL");
     }
 
-    public void betHandle(ActionEvent actionEvent) throws IOException {
+    public void betHandle(ActionEvent actionEvent) {
         if (betSlider.getValue() > 0) {
             double betAmount = betSlider.getValue();
             game = new Game(betAmount);

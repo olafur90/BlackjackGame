@@ -82,8 +82,6 @@ public class Game {
     private void HousePlays(int playerScore, Label houseCardsLabel) throws InterruptedException, IOException {
         StringBuilder cardsToLabel = new StringBuilder();
 
-        //for (int card:houseCardsInHand) cardsToLabel.append(card).append(", ");
-
         for (int i = 2; i < houseCardsInHand.size(); i++) {
             cardsToLabel.append(houseCardsInHand.get(i)).append(", ");
         }
@@ -98,7 +96,7 @@ public class Game {
             System.out.println("House sum: " + houseSum);
             cardsToLabel.append(card + ", ");
             houseCardsLabel.setText(cardsToLabel.toString());
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }
 
         if (houseSum > playerSum && houseSum <= 21) playerWins = false;
